@@ -1,0 +1,87 @@
+// Function to create and display the popup
+function createPopup() {
+    // Check if popup already exists
+    if (document.getElementById('popup-container')) {
+        return;
+    }
+
+    // Create popup container
+    var popupContainer = document.createElement('div');
+    popupContainer.id = 'popup-container';
+    popupContainer.style.position = 'fixed';
+    popupContainer.style.top = '50%';
+    popupContainer.style.left = '50%';
+    popupContainer.style.transform = 'translate(-50%, -50%)';
+    popupContainer.style.backgroundColor = '#fff';
+    popupContainer.style.padding = '20px';
+    popupContainer.style.border = '1px solid #ccc';
+    popupContainer.style.zIndex = '9999';
+
+    // Create popup content
+    var popupContent = document.createElement('div');
+    popupContent.innerHTML = `
+        <h2>Subscribe to our Newsletter</h2>
+        <form id="popup-form">
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name" required><br>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br>
+            <input type="checkbox" id="agree" name="agree" required>
+            <label for="agree">I agree to the terms and conditions</label><br>
+            <button type="submit">Submit</button>
+        </form>
+        <button id="close-popup">Close</button>
+    `;
+
+    // Append content to container
+    popupContainer.appendChild(popupContent);
+
+    // Append container to body
+    document.body.appendChild(popupContainer);
+
+    // Event listener for form submission
+    document.getElementById('popup-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+        validateForm(); // Validate form entries
+    });
+
+    // Event listener for closing the popup
+    document.getElementById('close-popup').addEventListener('click', function() {
+        document.body.removeChild(popupContainer); // Remove popup from DOM
+    });
+}
+
+// Function to validate form entries
+function validateForm() {
+    var name = document.getElementById('name').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var agree = document.getElementById('agree').checked;
+
+    if (name === '' || email === '' || !agree) {
+        alert('Please fill in all fields and agree to the terms and conditions.');
+        return false;
+    }
+
+    // Simple email validation
+    var emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
+        return false;
+    }
+
+    // If all validations pass, submit form
+    alert('Form submitted successfully!');
+    document.getElementById('popup-container').remove(); // Remove popup from DOM
+}
+
+// Desktop: Popup on exit intent
+document.addEventListener('mouseout', function(e) {
+    if (!e.toElement && !e.relatedTarget) { // Detect exit intent
+        createPopup(); // Create popup
+    }
+});
+
+// Mobile: Popup after 5 seconds
+setTimeout(function() {
+    createPopup(); // Create popup
+}, 5000);
